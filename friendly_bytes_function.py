@@ -1,73 +1,56 @@
-#If some of the rules are not clear enough, take a decision and describe it in your explanations.
-#any restrictions on the number the functions gets? does it have to be an integer/ whole?
-#right now I decide it must be an integer, for simplicity
-
-from math import log
+import math
 
 def friendly_bytes(number, decimals=2, binary=False, keep_width=False):
-    #using log rules to determine what's the biggest unit we can use to describe this number
-    #and using conversion rules to convert from base 1000 to 1024 whether the parameter binary=True
-    unitNum = log(number)
-    numByUnit=0
-    unit=""
-    if unitNum < 3:
-       numByUnit=number
-       unit= "B"
-    if unitNum >=3 and unitNum <6:
-        numByUnit= number/1000
-        unit="KB"
-        if (binary):
-            unit= "KiB"
-            numByUnit= numByUnit/1.02400
-    if unitNum >= 6 and unitNum <9 :
-        numByUnit= number/1000000
-        unit= "MB"
-        if (binary):
-            unit= "MiB"
-            numByUnit= numByUnit/1.048576
+    neg= False
+    if (number< 0):
+        number= (number*(-1))
+        neg= True
+    if (number== 0):
+       return "0 B"
+    size_units= ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    base= 1000
+    if(binary):
+        base=1024
+    unitDesc = int(math.floor(math.log(number, base))) #to get the biggest unit that we can describe this number by
+    p = math.pow(base, unitDesc) #the bytes to divide by
+    num_by_unit = round(number / p, decimals) 
+    unit= size_units[unitDesc]
+    if(binary):
+        if size_units[unitDesc]!= "B":
+            unit= size_units[unitDesc][0]+"i"+size_units[unitDesc][1]
+    if(neg):
+        num_by_unit= (-1)*num_by_unit
+    return (str(num_by_unit)+" "+unit)
 
-    if unitNum >= 9 and unitNum < 12:
-        numByUnit= number/1000000000
-        unit= "GB" 
-        if (binary):
-            unit= "GiB"
-            numByUnit= numByUnit/1.07374182
+numbers= (212321, 45450, 903428347234, 238942.443, 8343493409.22212, 840933049, 0, 0.00, 483434093, 24, 24.0, 0.3, 90.59438934, 122133, 328939324239329234, 3434904393490, 349823093209, 332423.3232432, 48234023409, 32.3, 239023932, 0, 11)
+decimals= (43443.2334243, 43456.879889, 12223.889, 32324.009, 873489732.079067, 1283.003643, 38732.3402424, 11.22, 32873298329.32, 3832.1)
+small= (0, 0.00, 0.00001, 0.00000009)
 
-    if unitNum >= 12 and unitNum < 15:
-        numByUnit= number/1000000000000
-        unit= "TB" 
-        if (binary):
-            unit= "TiB"
-            numByUnit= numByUnit/1.09951163
+for num in numbers: #on positive
+    friendly_num= friendly_bytes(num)
+    print("self.assertEqual(friendly_bytes(",num,"),'",friendly_num,"')")
 
-    if unitNum >= 15 and unitNum < 18:
-        numByUnit= number/10^15
-        unit= "PB" 
-        if (binary):
-            unit= "PiB"
-            numByUnit= numByUnit/1.12589991
+for num in numbers: #on negative
+    friendly_num= friendly_bytes(-num)
+    print("self.assertEqual(friendly_bytes(-",num,"),'",friendly_num,"')")
 
-    if unitNum >= 18 and unitNum < 21 :
-        numByUnit= number/10^18
-        unit = "EB"
-        if (binary):
-            unit= "EiB"
-            numByUnit= numByUnit/1.1529215
+for num in decimals: #on decimals
+    friendly_num= friendly_bytes(num)
+    print("self.assertEqual(friendly_bytes(",num,"),'",friendly_num,"')")
 
-    if unitNum >= 21 and unitNum < 24:
-        numByUnit= number/10^21
-        unit= "ZB" 
-        if (binary):
-            unit= "ZiB"
-            numByUnit= numByUnit/1.1805916207174
+for num in decimals: #on decimals
+    for i in range (10):
+        friendly_num= friendly_bytes(num, decimals=i)
+        print("self.assertEqual(friendly_bytes(",num,",decimals=,",i,"),'",friendly_num,"')")
 
-    if unitNum > 24 and unitNum < 27:
-        numByUnit= number/10^24
-        unit= "YB" 
-        if (binary):
-            unit="YiB" 
-            numByUnit= numByUnit/1.2089258196146
-    finalNum =round(numByUnit,decimals) #to truncate the num according to the parameter decimal.
-    return(finalNum, " ",unit)
+for num in numbers: #on binary
+    friendly_num= friendly_bytes(num, binary=True)
+    print("self.assertEqual(friendly_bytes(",num,", binary=True),'",friendly_num,"')")
 
-print(friendly_bytes(333))
+for num in numbers: #on binary
+    friendly_num= friendly_bytes(num, binary=False)
+    print("self.assertEqual(friendly_bytes(",num,", binary=False),'",friendly_num,"')")
+
+
+
+#print(friendly_bytes(2343234434535))
