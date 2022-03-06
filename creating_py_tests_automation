@@ -1,0 +1,54 @@
+
+print("import pytest")
+print("from friendly_bytes_function import friendly_bytes")
+print("")
+print ("def test_on_positive():")
+print("")
+for num in numbers: #on positive
+    friendly_num= friendly_bytes(num)
+    print("    assert(friendly_bytes(",num,") == '",friendly_num,"')")
+print("")
+print ("def test_on_negative():")
+print("")
+for num in numbers: #on negative
+    friendly_num= friendly_bytes(-num)
+    print("    assert(friendly_bytes(-",num,") == '",friendly_num,"')")
+print("")
+print ("def test_on_decimals():")
+print("")
+for num in decimals: #on decimals
+    friendly_num= friendly_bytes(num)
+    print("    assert(friendly_bytes(",num,") == '",friendly_num,"')")
+print("")
+print("def test_decimal_parameter():")
+print("")
+for num in decimals: #on decimals
+    for i in range (10):
+        friendly_num= friendly_bytes(num, decimals=i)
+        print("    assert (friendly_bytes(",num,",decimals=",i,") == '",friendly_num,"')")
+print("")
+print ("def test_binary_parameter():")
+print("")
+for num in numbers: #on binary
+    friendly_num= friendly_bytes(num, binary=True)
+    print("    assert (friendly_bytes(",num,", binary=True) == '",friendly_num,"')")
+print("")
+print ("def test_false_binary_parameter():")
+print("")
+for num in numbers: #on binary
+    friendly_num= friendly_bytes(num, binary=False)
+    print("    assert(friendly_bytes(",num,", binary=False) == '",friendly_num,"')")
+print("")
+print ("def test_eb_to_yb_sizes():")
+print("")
+for num in allSizes: #big sizes
+    for i in range (7):
+        friendly_num= friendly_bytes(i*num)
+        print("    assert(friendly_bytes(",i*num,", binary=False) == '",friendly_num,"')")
+print("")
+print ("def test_keep_width_true():")
+print("")
+for num in numbers: #big sizes
+    for i in range (7):
+        friendly_num= friendly_bytes(i*num, keep_width=True)
+        print("    assert(friendly_bytes(",i*num,", keep_width=True) == '",friendly_num,"')")
