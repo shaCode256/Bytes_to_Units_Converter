@@ -1,5 +1,5 @@
 import pytest
-from friendly_bytes_function import friendly_bytes
+from friendly_bytes import friendly_bytes
 
 def test_on_positive():
 
