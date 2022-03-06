@@ -1,5 +1,11 @@
 import math
 
+def truncate(number, digits) -> float:
+    stepper = 10.0 ** digits
+    if digits==0:
+        return math.trunc(number)
+    return math.trunc(stepper * number) / stepper
+
 def friendly_bytes(number, decimals=2, binary=False, keep_width=False):
     neg= False
     if (abs (number) >0 and abs(number) < 1):
@@ -15,16 +21,20 @@ def friendly_bytes(number, decimals=2, binary=False, keep_width=False):
         base=1024
     unitDesc = int(math.floor(math.log(number, base))) #to get the biggest unit that we can describe this number by
     p = math.pow(base, unitDesc) #the bytes to divide by
-    if decimals is not 0:
-        num_by_unit = round(number / p, decimals) 
-    if decimals is 0:
-        num_by_unit= math.trunc(number/p)
+    num_by_unit = truncate(number / p, decimals) 
     unit= size_units[unitDesc]
     if(binary):
         if size_units[unitDesc]!= "B":
             unit= size_units[unitDesc][0]+"i"+size_units[unitDesc][1]
     if(neg):
         num_by_unit= (-1)*num_by_unit
+    if keep_width:
+        num_zeros= math.floor(math.log(p, 10))
+        numStr= str(num_by_unit)
+        if numStr != None and '.' in numStr:
+            lenAfterDot =len(numStr.split('.')[1])
+            zeros_string= '0'*(num_zeros-lenAfterDot)
+            return str(num_by_unit)+zeros_string+" "+unit
     return (str(num_by_unit)+" "+unit)
 
 numbers= (212321, 45450, 903428347234, 238942.443, 8343493409.22212, 840933049, 0, 0.00, 483434093, 24, 24.0, 0.3, 90.59438934, 122133, 328939324239329234, 3434904393490, 349823093209, 332423.3232432, 48234023409, 32.3, 239023932, 0, 11)
@@ -74,6 +84,12 @@ for num in allSizes: #big sizes
         friendly_num= friendly_bytes(i*num)
         print("assert(friendly_bytes(",i*num,", binary=False) == '",friendly_num,"')")
 
+print ("def test_keep_width_true():")
+for num in numbers: #big sizes
+    for i in range (7):
+        friendly_num= friendly_bytes(i*num, keep_width=True)
+        print("assert(friendly_bytes(",i*num,", keep_width=True) == '",friendly_num,"')")
 
 
 #print(friendly_bytes(2343234434535))
+
